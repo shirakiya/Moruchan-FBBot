@@ -23,7 +23,7 @@ def send_text_message(sender_id, text):
     try:
         res = requests.post(url, params=ACCESS_TOKEN,
                             json=payload)
-        print(resp.content)
+        print(res.content)
     except Exception as e:
         print('ERROR: ' + str(e))
         return False
