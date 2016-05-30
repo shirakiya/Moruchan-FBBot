@@ -21,11 +21,14 @@ def send_text_message(sender_id, text):
     }
 
     try:
-        res = requests.post(url, param=ACCESS_TOKEN,
+        res = requests.post(url, params=ACCESS_TOKEN,
                             json=payload)
         print(resp.content)
     except Exception as e:
         print('ERROR: ' + str(e))
+        return False
+    return True
+
 
 @app.route('/webhook', methods=['GET'])
 def varification():
@@ -45,8 +48,8 @@ def callback():
             sender_id = event['sender']['id']
             if 'message' in event and 'text' in event['message']:
                 text = event['message']['text']
-                send_text_message(sender_id, text)
-    print('OK')
+                result = send_text_message(sender_id, text)
+    return 'OK'
 
 if __name__ == '__main__':
     app.run()
