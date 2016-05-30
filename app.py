@@ -3,11 +3,29 @@
 import os
 from flask import Flask
 from flask import request
+import requests
 
 app = Flask(__name__)
 ENV = os.getenv('ENV')
 if ENV != 'production':
     app.config['DEBUG'] = True
+
+def send_text_message(sender_id, text):
+    ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+
+    url = 'https://graph.facebook.com/v2.6/me/messages'
+    access_token = {'access_token': ACCESS_TOKEN}
+    payload = {
+        'recipient': {'id': sender_id},
+        'message': {'text': text},
+    }
+
+    try:
+        res = requests.post(url, param=ACCESS_TOKEN,
+                            json=payload)
+        print(resp.content)
+    except Exception as e:
+        print('ERROR: ' + str(e))
 
 @app.route('/webhook', methods=['GET'])
 def varification():
@@ -22,8 +40,13 @@ def varification():
 @app.route('/webhook', methods=['POST'])
 def callback():
     req = request.get_json(cache=False)
-    print(req)
-    return
+    for entry in req['entry']:
+        for event in entry['messaging']:
+            sender_id = event['sender']['id']
+            if 'message' in event and 'text' in event['message']:
+                text = event['message']['text']
+                send_text_message(sender_id, text)
+    print('OK')
 
 if __name__ == '__main__':
     app.run()
