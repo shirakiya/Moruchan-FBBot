@@ -19,5 +19,11 @@ def varification():
         return challenge
     return 'Error, wrong validation token'
 
+@app.route('/webhook', methods=['POST'])
+def callback():
+    req = request.get_json(cache=False)
+    print(req)
+    return
+
 if __name__ == '__main__':
     app.run()
