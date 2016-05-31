@@ -43,6 +43,7 @@ def varification():
 @app.route('/webhook', methods=['POST'])
 def callback():
     req = request.get_json(cache=False)
+    print(req)
     for entry in req['entry']:
         for event in entry['messaging']:
             sender_id = event['sender']['id']
